@@ -12,8 +12,6 @@ print("Starting")
 leftMotor = robot.getDevice('left wheel motor')
 rightMotor = robot.getDevice('right wheel motor')
 # set the target position of the motors
-#leftMotor.setPosition(float('inf'))
-#rightMotor.setPosition(float('inf'))
 #rightMotor.setVelocity(0.5)
 #leftMotor.setVelocity(0.5)
 
@@ -38,8 +36,11 @@ for i in range(8):
     ps.append(robot.getDevice(psNames[i]))
     ps[i].enable(TIME_STEP)
 
-rightMotor.setVelocity(1)
-leftMotor.setVelocity(1)
+leftMotor.setPosition(float('inf'))
+rightMotor.setPosition(float('inf'))
+leftMotor.setVelocity(2)
+rightMotor.setVelocity(2)
+
 
 #while robot.step(TIME_STEP) != -1:
     #leftMotor.setPosition(float('inf'))
@@ -59,51 +60,109 @@ leftMotor.setVelocity(1)
     #if not is sensor 7 or 6 active
         #if yes then rotate right 90 degrees and restart
     #if not move forward and restart
+
 def isAtEnd():
     return False
-
-    #if touchSensor.getValue() > 0:
-    #    return True
-    #else:
-    #    return False
-
-def moveForward():
-    return
+    """
+    if touchSensor.getValue() > 0:
+        return True
+    else:
+        return False
+    """
 
 def rotate180():
     print("Rotating 180 degrees")
+    leftMotor.setVelocity(-2)
+    rightMotor.setVelocity(2)
+    robot.step(2210)
+    leftMotor.setVelocity(0)
+    rightMotor.setVelocity(0)
     return
 
 def rotateLeft():
     print("Turning left")
+    leftMotor.setVelocity(-2)
+    rightMotor.setVelocity(2)
+    robot.step(1105)
+    leftMotor.setVelocity(0)
+    rightMotor.setVelocity(0)
     return
 
 def rotateRight():
     print("Turning right")
+    leftMotor.setVelocity(2)
+    rightMotor.setVelocity(-2)
+    robot.step(1105)
+    leftMotor.setVelocity(0)
+    rightMotor.setVelocity(0)
     return
 
+def isWallLeft():
+    if ps[5].getValue() > 200:
+        return True
+    else:
+        return False
+
+def isWallRight():
+    if ps[2].getValue() > 200:
+        return True
+    else:
+        return False
+
+def isWallFront():
+    if ps[0].getValue() > 200 and ps[7].getValue() > 200:
+        return True
+    else:
+        return False
+
+def moveForward():
+    leftMotor.setVelocity(2)
+    rightMotor.setVelocity(2)
+
+
+
 while robot.step(TIME_STEP) != -1:
-
-    print(ps[1].getValue(), ps[6].getValue())
-
+    #print(ps[1].getValue())
+    """
     if isAtEnd():
         print("Finished")
         break
-    elif ps[1].getValue() > 200 and ps[6].getValue() > 200:
+    elif ps[7].getValue() > 80 and ps[0].getValue() > 80:
+        leftMotor.setVelocity(0)
+        rightMotor.setVelocity(0)
         rotate180()
-    elif ps[0].getValue() > 200 and ps[1].getValue() > 200:
+    elif ps[0].getValue() > 80 and ps[1].getValue() > 80:
+        leftMotor.setVelocity(0)
+        rightMotor.setVelocity(0)
         rotateLeft()
-    elif ps[7].getValue() > 200 and ps[6].getValue() > 200:
+    elif ps[7].getValue() > 80 and ps[6].getValue() > 80:
+        leftMotor.setVelocity(0)
+        rightMotor.setVelocity(0)
         rotateRight()
-    else:
-        moveForward()
+    """
 
+    while isAtEnd() != True:
+        if isWallLeft():
+            if isWallFront():
+                moveForward()
+            else:
+                rotateRight()
+        else:
+            print("here")
+            #rotateLeft()
+    print("Finished")
+    break
+"""
 while robot.step(TIME_STEP) != -1:
+
+    rightMotor.setVelocity(-10)
+    leftMotor.setVelocity(10)
+
     answer = compass.getValues()
 
     if not math.isnan(answer[0]):
         # print(answer)
-        print("Touch Sensor: " + str(touchSensor.getValue()))
+        #print("Touch Sensor: " + str(touchSensor.getValue()))
 
         angle = (math.atan2(answer[0], answer[1]))
         # print(angle)
@@ -122,27 +181,8 @@ while robot.step(TIME_STEP) != -1:
     print(round(leftE.getValue()), 2)
     print(round(rightE.getValue()), 2)
 
-    # TODO make functions for rotate 90 degrees clockwise and vice versa
-    # rotating 180 degrees can just call each function twice etc.
+"""
 
-    # TODO make a function for moving forward until a wall is detected
-    # then fall into right hand or left hand method
-
-    # Left Hand Rule
-    # 1 Are You at the End?
-    # YES
-    # EXIT
-    # NO
-    # Is there a wall to the left?
-    # NO
-    # Rotate counter clockwise 90 degrees and restart
-    # YES
-    # Is the space in front free?
-    # NO
-    # Rotate clockwise 90 degrees and restart
-    # YES
-    # Move forward and restart
-    # Right Hand Rule
 
     # Read the sensors:
     # Enter here functions to read sensor data, like:
@@ -152,4 +192,4 @@ while robot.step(TIME_STEP) != -1:
 
     # Enter here functions to send actuator commands, like:
     #  motor.setPosition(10.0)
-    pass
+pass
