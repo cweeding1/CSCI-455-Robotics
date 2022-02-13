@@ -1,5 +1,4 @@
-from controller import Robot, Motor, Device, TouchSensor, DistanceSensor, Gyro, Accelerometer
-import math
+from controller import Robot, Motor, Device, TouchSensor, DistanceSensor
 
 class RobotController:
 
