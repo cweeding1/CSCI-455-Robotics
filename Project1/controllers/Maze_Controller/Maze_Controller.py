@@ -1,3 +1,5 @@
+import os
+
 from controller import Robot, Motor, Device, TouchSensor, DistanceSensor
 
 class RobotController:
@@ -32,6 +34,13 @@ class RobotController:
             self.psNames[i].enable(self.TIME_STEP)
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
+
+    def writeFile(self, file):
+        #File reading for learning
+        #If there is a file, then you can run right hand rule, if not
+        #then create file and run left hand rule.
+        f.write("I ran")
+
 
     #set the velocity using a speed for the left wheel and right wheel
     def velocity(self, leftSpeed, rightSpeed):
@@ -142,11 +151,19 @@ class RobotController:
                         self.velocity(self.MAX_SPEED, self.MAX_SPEED/8)
 
 #create a robot
+
 robot = Robot()
 print("Starting")
+
 
 #make a new instance of robot
 newRobot = RobotController(robot)
 
-#newRobot.leftHand()
-newRobot.rightHand()
+if(1==1):
+    f = open("demmo.txt", 'w+')
+    newRobot.leftHand()
+    newRobot.writeFile(f)
+else:
+    f = open("demmo.txt", 'a+')
+    newRobot.rightHand()
+    newRobot.writeFile(f)
