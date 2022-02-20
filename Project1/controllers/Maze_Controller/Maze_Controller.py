@@ -15,6 +15,20 @@ class RobotController:
         self.leftE = self.robot.getDevice("left wheel sensor")
         self.rightE = self.robot.getDevice("right wheel sensor")
         self.psNames = ['ps0', 'ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'ps7']
+        self.maze = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.fileLength = 0
+        self.fileName = "robotData.txt"
         self.enable()
 
     # enable all the robot devices used
@@ -83,22 +97,32 @@ class RobotController:
         else:
             return False
 
-    # TODO check file
-    def checkFile(self):
-        pass
-    
-    # TODO write to file
+    # check if robot data file exists
+    def start(self):
+        self.writeToFile()
+        file1 = open(self.fileName, "r")
+        self.fileLength = (len(file1.read()))
+
+        if self.fileLength <= 3:
+            self.rightHand()
+        else:
+            self.leftHand()
+
+        file1.close()
+
+    # write robot data to file
     def writeToFile(self):
-        # if file exists then read the first value
-        # if not, create file and store a 1 then run rhr
-        # add 1 to it each time. if odd=lhr even=rhr
-        pass
+        file1 = open(self.fileName, "a")
+        L = ["1"]
+        file1.writelines(L)
+        # write maze data to file
+        # file1.writelines(self.maze)
+        file1.close()
 
     # right-hand rule maze following algorithm
     def rightHand(self):
 
         while self.robot.step(self.TIME_STEP) != -1:
-
 
             if self.isAtEnd():
                 print("Win")
@@ -107,7 +131,7 @@ class RobotController:
 
             else:
                 if self.frontWallRight():
-                    self.velocity(-self.MAX_SPEED * .5, self.MAX_SPEED * .3)
+                    self.velocity(-self.MAX_SPEED / 2, self.MAX_SPEED / 3)
 
                 else:
                     if self.wallRight() and self.rightCorner():
@@ -135,7 +159,7 @@ class RobotController:
 
             else:
                 if self.frontWallLeft():
-                    self.velocity(self.MAX_SPEED * .3, -self.MAX_SPEED * .5)
+                    self.velocity(self.MAX_SPEED / 3, -self.MAX_SPEED / 2)
 
                 else:
                     if self.wallLeft() and self.leftCorner():
@@ -156,8 +180,7 @@ class RobotController:
 # main function makes new instance of robot
 def main():
     newRobot = RobotController()
-    newRobot.leftHand()
-    # newRobot.rightHand()
+    newRobot.start()
 
 
 if __name__ == '__main__':
